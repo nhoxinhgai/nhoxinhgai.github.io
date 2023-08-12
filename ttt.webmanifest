@@ -1,0 +1,22 @@
+{
+  "name": "xin99",
+  "short_name": "xin99",
+  "description": "xin99,thanh tam",
+  "icons": [
+    {
+      "src": "54321.JPG",
+      "sizes": "32x32",
+      "type": "image/jpg"
+    },
+    {
+      "src": "54321.JPG",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "display_override": "Fullscreen",
+  "theme_color": "#6944ff ",
+  "background_color": "#c8d6e5"
+}
