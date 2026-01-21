@@ -268,7 +268,9 @@ function createHeart() {
     y: random(H, H + 200),
     size: random(6, 12),
     speed: random(0.5, 1.5),
-    alpha: random(0.5, 1),
+    alpha: random(0.4, 0.8),
+    hue: random(340, 360),   // màu hồng → đỏ
+    light: random(75, 90),   // bắt đầu nhạt
   };
 }
 
@@ -276,10 +278,10 @@ for (let i = 0; i < HEART_COUNT; i++) {
   hearts.push(createHeart());
 }
 
-function drawHeart(x, y, size, alpha) {
+function drawHeart(x, y, size, alpha, hue, light) {
   ctx.save();
   ctx.globalAlpha = alpha;
-  ctx.fillStyle = "#ff5a7a";
+  ctx.fillStyle = `hsl(${hue}, 80%, ${light}%)`;
   ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.bezierCurveTo(x - size, y - size, x - size * 2, y + size / 2, x, y + size * 2);
@@ -291,14 +293,18 @@ function drawHeart(x, y, size, alpha) {
 function animate() {
   ctx.clearRect(0, 0, W, H);
 
-  hearts.forEach(h => {
-    h.y -= h.speed;
-    if (h.y < -50) {
-      h.x = random(0, W);
-      h.y = H + random(50, 200);
-    }
-    drawHeart(h.x, h.y, h.size, h.alpha);
-  });
+ hearts.forEach(h => {
+  h.y -= h.speed;
+
+  // đổi màu: nhạt → đậm
+  if (h.light > 45) h.light -= 0.15;
+
+  if (h.y < -50) {
+    Object.assign(h, createHeart());
+  }
+
+  drawHeart(h.x, h.y, h.size, h.alpha, h.hue, h.light);
+});
 
   requestAnimationFrame(animate);
 }
