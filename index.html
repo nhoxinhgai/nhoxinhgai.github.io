@@ -53,6 +53,7 @@
         max-width: 700px;
         position: relative;
     }
+    
 
     .profile-card__img {
         width: 150px;
@@ -128,7 +129,20 @@
         background: Linear-gradient(45deg, #1da1f2, #0e71c8);
         box-shadow: 0px 4px 30px rgba(19, 127, 212, 10);
     }
+    #floatingHearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.profile-card {
+  position: relative;
+  z-index: 5;
+}
   </style>
+  <body>
+    <canvas id="floatingHearts"></canvas>
+
   <div class="wrapper" style="position:relative;">
       <div class="profile-card js-profile-card">
         <div class="profile-card__img">
@@ -205,13 +219,13 @@
             <path
                 d="M26.462 7.456c0 1.060-0.859 1.919-1.919 1.919s-1.919-0.859-1.919-1.919c0-1.060 0.859-1.919 1.919-1.919s1.919 0.859 1.919 1.919z">
             </path>
+            </symbol>
         <symbol id="icon-tiktok" viewBox="0 0 32 32">
         <title>tiktok</title>
         <path
           d="M19.2 2h3.2c.1 1.2.5 2.3 1.3 3.3.8 1 1.9 1.7 3.1 2.1v3.3c-1.7-.1-3.3-.6-4.8-1.4v8.6c0 2.3-.8 4.2-2.4 5.7-1.6 1.5-3.6 2.3-5.9 2.3-2.3 0-4.3-.8-5.9-2.3-1.6-1.5-2.4-3.5-2.4-5.7s.8-4.2 2.4-5.7c1.6-1.5 3.6-2.3 5.9-2.3.5 0 1.1 0 1.6.1v3.5c-.5-.1-1-.1-1.6-.1-1.2 0-2.3.4-3.1 1.2-.9.8-1.3 1.8-1.3 3s.4 2.2 1.3 3c.9.8 1.9 1.2 3.1 1.2 1.3 0 2.4-.4 3.2-1.2.8-.8 1.2-1.8 1.2-3.1V2z"
         />
       </symbol>
-        </symbol>
                <symbol id="icon-blog" viewbox="0 0 32 32">
             <title>blog</title>
             <path
@@ -229,4 +243,67 @@
         </symbol>
     </defs>
 </svg>
+<script>
+const canvas = document.getElementById("floatingHearts");
+const ctx = canvas.getContext("2d");
+
+let W, H;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+const hearts = [];
+const HEART_COUNT = 40;
+
+function random(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function createHeart() {
+  return {
+    x: random(0, W),
+    y: random(H, H + 200),
+    size: random(6, 12),
+    speed: random(0.5, 1.5),
+    alpha: random(0.5, 1),
+  };
+}
+
+for (let i = 0; i < HEART_COUNT; i++) {
+  hearts.push(createHeart());
+}
+
+function drawHeart(x, y, size, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = "#ff5a7a";
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.bezierCurveTo(x - size, y - size, x - size * 2, y + size / 2, x, y + size * 2);
+  ctx.bezierCurveTo(x + size * 2, y + size / 2, x + size, y - size, x, y);
+  ctx.fill();
+  ctx.restore();
+}
+
+function animate() {
+  ctx.clearRect(0, 0, W, H);
+
+  hearts.forEach(h => {
+    h.y -= h.speed;
+    if (h.y < -50) {
+      h.x = random(0, W);
+      h.y = H + random(50, 200);
+    }
+    drawHeart(h.x, h.y, h.size, h.alpha);
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
 </html> 
